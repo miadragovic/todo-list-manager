@@ -1,5 +1,5 @@
 # To-Do List Manager — SDLC Checkpoint 1
-*Author: Mia Dragovic*
+*Student: Mia Dragovic*
 *Date: September 2025*
 
 ## Introduction
