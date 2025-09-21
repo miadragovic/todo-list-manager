@@ -1,5 +1,5 @@
 # To-Do List Manager — SDLC Checkpoint 1
-*Author: [Your Name]*
+*Author: Mia Dragovic*
 *Date: September 2025*
 
 ## Introduction
@@ -38,4 +38,3 @@ I will use an **Agile** approach since it fits well with building the app step-b
 
 ---
 
-*This plan serves as the foundation for the project and will be updated as development progresses in future checkpoints.*
