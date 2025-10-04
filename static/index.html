@@ -5,7 +5,6 @@
     <title>To-Do List Manager</title>
     <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet" />
     <style>
-        /* Base styles */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -61,7 +60,6 @@
         button:hover {
             background-color: #2563eb;
         }
-        /* Filter dropdown styles */
         #filter-priority {
             margin: 1.5rem 0 1rem 0;
             padding: 12px 16px;
@@ -111,15 +109,15 @@
             user-select: none;
         }
         .priority.low {
-            background-color: #dbeafe; /* light blue */
+            background-color: #dbeafe;
             color: #2563eb;
         }
         .priority.medium {
-            background-color: #fef3c7; /* light amber */
+            background-color: #fef3c7;
             color: #b45309;
         }
         .priority.high {
-            background-color: #fee2e2; /* light red */
+            background-color: #fee2e2;
             color: #b91c1c;
         }
         .actions button {
@@ -129,6 +127,7 @@
             font-size: 1.1rem;
             color: #bbb;
             transition: color 0.3s ease;
+            margin-left: 8px;
         }
         .actions button:hover {
             color: #f87171;
@@ -139,6 +138,7 @@
     <div class="container">
         <h1>To-Do List Manager</h1>
         <form id="task-form">
+            <input type="hidden" id="task-id" />
             <input type="text" id="title" placeholder="Task Title" required />
             <input type="text" id="description" placeholder="Description (Optional)" />
             <select id="priority" required>
@@ -147,7 +147,8 @@
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
-            <button type="submit">Add Task</button>
+            <button type="submit" id="submit-button">Add Task</button>
+            <button type="button" id="cancel-button" style="display:none;">Cancel</button>
         </form>
 
         <label for="filter-priority" style="font-weight: 600;">Filter by Priority:</label>
@@ -163,9 +164,14 @@
 
     <script>
         let tasks = [];
+        let editingTaskId = null;
 
         document.getElementById('filter-priority').addEventListener('change', function() {
             renderTasks();
+        });
+
+        document.getElementById('cancel-button').addEventListener('click', function() {
+            resetForm();
         });
 
         function fetchTasks() {
@@ -182,8 +188,8 @@
             const tasksDiv = document.getElementById('tasks');
             tasksDiv.innerHTML = '';
 
-            const filteredTasks = selectedPriority === 'all' 
-                ? tasks 
+            const filteredTasks = selectedPriority === 'all'
+                ? tasks
                 : tasks.filter(task => task.priority === selectedPriority);
 
             filteredTasks.forEach(task => {
@@ -199,6 +205,7 @@
                         <div class="priority ${priorityClass}">${task.priority}</div>
                     </div>
                     <div class="actions">
+                        <button onclick="editTask(${task.id})" aria-label="Edit task">&#9998;</button>
                         <button onclick="deleteTask(${task.id})" aria-label="Delete task">&#x2715;</button>
                     </div>
                 `;
@@ -212,20 +219,57 @@
             const description = document.getElementById('description').value.trim();
             const priority = document.getElementById('priority').value;
 
-            const id = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-            const task = { id, title, description, priority };
+            if (!title || !priority) return;
 
-            fetch('/tasks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(task),
-            }).then(() => {
-                fetchTasks();
-                this.reset();
-            });
+            if (editingTaskId) {
+                // Update existing task
+                fetch(`/tasks/${editingTaskId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: editingTaskId, title, description, priority }),
+                }).then(() => {
+                    fetchTasks();
+                    resetForm();
+                });
+            } else {
+                // Add new task
+                const id = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+                const task = { id, title, description, priority };
+                fetch('/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(task),
+                }).then(() => {
+                    fetchTasks();
+                    resetForm();
+                });
+            }
         };
 
-        function deleteTask(id) {
+        window.editTask = function(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            editingTaskId = id;
+            document.getElementById('task-id').value = id;
+            document.getElementById('title').value = task.title;
+            document.getElementById('description').value = task.description || '';
+            document.getElementById('priority').value = task.priority;
+            document.getElementById('submit-button').textContent = 'Update Task';
+            document.getElementById('cancel-button').style.display = 'inline-block';
+        };
+
+        function resetForm() {
+            editingTaskId = null;
+            document.getElementById('task-id').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('priority').value = '';
+            document.getElementById('submit-button').textContent = 'Add Task';
+            document.getElementById('cancel-button').style.display = 'none';
+        }
+
+        window.deleteTask = function(id) {
             fetch(`/tasks/${id}`, { method: 'DELETE' }).then(() => {
                 fetchTasks();
             });
