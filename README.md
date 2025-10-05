@@ -7,13 +7,14 @@
 I chose to build a simple to-do list manager app. This app lets users add tasks, see their tasks, update them if needed, delete tasks they don’t want, and assign a priority level to each task (like low, medium, or high). The tasks with their priorities are saved on the computer using a local file (JSON file). The app has a backend with API endpoints for these actions and a simple webpage interface. This version doesn't include user accounts or advanced features like task collaboration.
 
 ## How to Run
-- Install Python 3.8+ and required packages:
+- Make sure you have Python 3.8 or higher installed (check by running python --version or python3 --version in your terminal)
+- Install the required Python packages by running:
 pip install fastapi uvicorn pydantic
-- Start the backend server:
+- Start the backend server by running this command in your project root folder:
 uvicorn app.main:app --reload
-- Open the frontend in your browser:
+- Open your web browser and go to:
 http://127.0.0.1:8000/static/index.html
-- Use the web interface to manage your to-do tasks interactively.
+- You can now use the web interface to add, update, delete, and filter tasks.
 
 ## Technology Stack
 - Backend: Python, FastAPI, Pydantic
