@@ -9,8 +9,10 @@ I chose to build a simple to-do list manager app. This app lets users add tasks,
 ## How to Run
 - Make sure you have Python 3.8 or higher installed (check by running python --version or python3 --version in your terminal)
 - Install the required Python packages by running:
+
 pip install fastapi uvicorn pydantic
 - Start the backend server by running this command in your project root folder:
+
 uvicorn app.main:app --reload
 - Open your web browser and go to:
 http://127.0.0.1:8000/static/index.html
