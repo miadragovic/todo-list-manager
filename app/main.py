@@ -11,7 +11,10 @@ def read_root():
 
 @app.post("/tasks", response_model=Task)
 def api_create_task(task: Task):
-    return create_task(task)
+    try:
+        return create_task(task)
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
 
 @app.get("/tasks", response_model=list[Task])
 def api_get_tasks():
@@ -37,6 +40,4 @@ def api_delete_task(task_id: int):
         raise HTTPException(status_code=404, detail="Task not found")
     return {"detail": "Task deleted successfully"}
 
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
