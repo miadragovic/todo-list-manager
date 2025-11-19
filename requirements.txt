@@ -4,4 +4,6 @@ pydantic
 pytest
 coverage
 httpx
+prometheus-fastapi-instrumentator
+
 

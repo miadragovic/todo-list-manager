@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from app.models import Task
 from app.repository import TaskRepository
 from fastapi.staticfiles import StaticFiles
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
 repo = TaskRepository()
@@ -9,6 +10,10 @@ repo = TaskRepository()
 @app.get("/")
 def read_root():
     return {"message": "To-Do List Manager API is running."}
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 @app.post("/tasks", response_model=Task)
 def api_create_task(task: Task):
@@ -42,3 +47,5 @@ def api_delete_task(task_id: int):
     return {"detail": "Task deleted successfully"}
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+Instrumentator().instrument(app).expose(app)
