@@ -13,11 +13,11 @@ This repository contains version 2 of my to-do list manager. It is now built wit
 ## Improvements in This Version
 
 - Refactored using SOLID principles and modularity
-- Over 90% test coverage using `pytest` and `coverage`
-- Continuous Integration (CI) pipeline with GitHub Actions: runs all tests, coverage measured and enforced
+- 96% test coverage using `pytest` and `coverage`
+- Continuous Integration (CI) pipeline with GitHub Actions: runs all tests, measures coverage and builds the app
 - Docker support for easy containerized deployment
-- End-to-end and integration tests for all endpoints and backend logic
-- **App monitoring with Prometheus: live metrics on requests, latencies, and errors**
+- Integration tests for main API endpoints and backend logic
+- App monitoring with Prometheus: live metrics on requests, latencies, and errors
 - Documentation and step-by-step instructions for setup, test, and monitoring
 
 ---
@@ -96,7 +96,7 @@ Screenshots are saved in `/screenshots` folder.
 - Run all tests and coverage report:
 pytest --cov=app --cov-report=html
 
-- Open coverage report at `htmlcov/index.html` (coverage >90%)
+- Open coverage report at `htmlcov/index.html` (coverage of 96%)
 
 ---
 
@@ -106,7 +106,7 @@ pytest --cov=app --cov-report=html
 docker build -t todo-list-manager .
 
 2. Run container:
-docker run -p 8000:8000 todo-list-manager
+docker run -p 8000:80 todo-list-manager
 
 3. Access app at:  
 [http://127.0.0.1:8000/static/index.html](http://127.0.0.1:8000/static/index.html)
@@ -121,6 +121,15 @@ Monitoring endpoints: `/health` and `/metrics`
 - Pipeline fails if tests fail or coverage <70%
 - View logs and artifacts on GitHub Actions tab
 
+Current status:
+- The Docker image builds and runs correctly locally.
+- The image is pushed automatically to Azure Container Registry from the pipeline.
+- An Azure Web App for Containers is configured to use this image, but the deployment in the shared Azure environment is currently failing with an “Application Error”. The automation and configuration are in place, but the runtime issue is still being investigated.
+
+You can view pipeline runs and logs in the GitHub “Actions” tab.
+
+
+
 ---
 
 ## Features
@@ -132,12 +141,13 @@ Monitoring endpoints: `/health` and `/metrics`
 - Sort/filter by priority
 - Automated tests and CI pipeline
 - Live metrics monitored by Prometheus
+- Health endpoint for quick status checks
 
 ---
 
 ## Non-Functional Goals
 
-- Reliable, scalable backend
+- Reliable and scalable backend
 - Modular and testable code
 - Deployment-ready container and pipeline
 - Full observability via monitoring
@@ -146,10 +156,10 @@ Monitoring endpoints: `/health` and `/metrics`
 
 ## Development and Next Steps
 
-- Add cloud deployment (Azure pending)
+- Stabilize Azure Web App deployment (image already builds and is pushed to ACR, but default domain currently shows an Application Error)
 - Add Grafana dashboards for visualization (optional)
-- Documentation and monitoring screenshots complete
-- Short report included (`REPORT.md`)
+- Extend architecture towards multiple services
+
 
 ---
 
@@ -158,6 +168,7 @@ Monitoring endpoints: `/health` and `/metrics`
 - Modularity via SOLID principles
 - Incremental development with version control
 - Automated CI/CD from GitHub Actions
+- Docker image used as the main deployment artifact
 
 ---
 
@@ -168,9 +179,9 @@ Monitoring endpoints: `/health` and `/metrics`
 - Dockerfile
 - Tests (`tests/`) and coverage reports (`htmlcov/`)
 - Monitoring screenshots (`/screenshots`)
+- Report: REPORT.md
 
 ---
 
-*Ready to run, test, monitor, and deploy!*
 
 

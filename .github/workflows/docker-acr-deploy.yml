@@ -3,7 +3,7 @@ name: Build and deploy Docker container to Azure Web App
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:
@@ -29,6 +29,6 @@ jobs:
     - name: Deploy to Azure Web App for Containers
       uses: azure/webapps-deploy@v2
       with:
-        app-name: mia-todo-manager
+        app-name: mia-todo-manager2
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
         images: ${{ secrets.ACR_LOGIN_SERVER }}/mia-todo-manager:latest
