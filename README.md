@@ -13,7 +13,7 @@ This repository contains version 2 of my to-do list manager. It is now built wit
 ## Improvements in This Version
 
 - Refactored using SOLID principles and modularity
-- 96% test coverage using `pytest` and `coverage`
+- 94% test coverage using `pytest` and `coverage`
 - Continuous Integration (CI) pipeline with GitHub Actions: runs all tests, measures coverage and builds the app
 - Docker support for easy containerized deployment
 - Integration tests for main API endpoints and backend logic
@@ -96,7 +96,7 @@ Screenshots are saved in `/screenshots` folder.
 - Run all tests and coverage report:
 pytest --cov=app --cov-report=html
 
-- Open coverage report at `htmlcov/index.html` (coverage of 96%)
+- Open coverage report at `htmlcov/index.html` (coverage of 94%)
 
 ---
 
@@ -119,12 +119,16 @@ Monitoring endpoints: `/health` and `/metrics`
 
 - GitHub Actions runs tests and coverage on every push and PR
 - Pipeline fails if tests fail or coverage <70%
-- View logs and artifacts on GitHub Actions tab
+- Workflows also build the Docker image, push it to Azure Container Registry, and deploy to Azure App Service.
 
 Current status:
+- All CI workflows are green
 - The Docker image builds and runs correctly locally.
 - The image is pushed automatically to Azure Container Registry from the pipeline.
-- An Azure Web App for Containers is configured to use this image, but the deployment in the shared Azure environment is currently failing with an “Application Error”. The automation and configuration are in place, but the runtime issue is still being investigated.
+- The Web App on Azure is successfully deployed and running.
+- The default Azure domain for the Web App returns the root API message, for example:
+{"message": "To-Do List Manager API is running."}
+- The frontend UI is served as a static file under /static, so to see the UI in a browser you need to append /static/index.html to the default domain
 
 You can view pipeline runs and logs in the GitHub “Actions” tab.
 
@@ -156,19 +160,9 @@ You can view pipeline runs and logs in the GitHub “Actions” tab.
 
 ## Development and Next Steps
 
-- Stabilize Azure Web App deployment (image already builds and is pushed to ACR, but default domain currently shows an Application Error)
+- Further Azure deployment
 - Add Grafana dashboards for visualization (optional)
 - Extend architecture towards multiple services
-
-
----
-
-## Project Structure and SDLC
-
-- Modularity via SOLID principles
-- Incremental development with version control
-- Automated CI/CD from GitHub Actions
-- Docker image used as the main deployment artifact
 
 ---
 

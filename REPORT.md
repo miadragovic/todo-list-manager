@@ -15,7 +15,7 @@ The application is a FastAPI backend that manages to‑do items. For this assign
 - Refactoring and code quality.
 - Automated tests and coverage.
 - CI with GitHub Actions.
-- Docker containerization and deployment attempts to Azure.
+- Docker containerization and Azure App Service deployment 
 - Health checks and metrics with Prometheus.
 - Documentation.
 
@@ -49,7 +49,7 @@ Before this assignment there were no serious automated tests. I added tests usin
   Coverage is measured with coverage.py together with pytest. The command I use is:
 - pytest --cov=app --cov-report=term-missing
 
-This shows which lines are covered and produces an HTML report (screenshot provided). With the current test suite the coverage is 95%.
+This shows which lines are covered and produces an HTML report (screenshot provided). With the current test suite the coverage is 94%.
 
 ## Continuous Integration (CI)
 
@@ -78,21 +78,21 @@ I wrote a Dockerfile so the app can run in a container. The Dockerfile:
   - gunicorn -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:80
 
 Locally, I can run:
-- docker build -t todo-local .
-- docker run -p 8080:80 todo-local
+- docker build -t todo-list-manager .
+- docker run -p 8000:80 todo-list-manager
 
-With this, the API is available at http://localhost:8080/
+With this, the API is available at http://127.0.0.1:8000/
 , /docs shows the FastAPI docs, and /health returns the health status. This proves that the container image itself is correct.
 
-# Azure deployment attempts
+# Azure deployment
 
-For the “deployment automation” requirement, I went further and integrated the container with Azure:
-- The GitHub workflow builds a Docker image from the repository.
+For the deployment automation part, the container image is fully integrated with Azure:
+- The GitHub workflow docker-acr-deploy.yml builds a Docker image from the repository.
 - The image is tagged and pushed to Azure Container Registry using credentials stored as GitHub secrets.
-- I created an Azure Web App for Containers that pulls this image.
-- I also tried a separate “code” Web App with zip deployment and a startup command.
+- An Azure Web App for Containers named mia-todo-manager is configured to pull this image. The app listens on port 80 inside the container and the Web App uses WEBSITES_PORT=80.
+- The default domain of this Web App now successfully serves the API. The root / endpoint returns the JSON status message, and the UI is available by adding /static/index.html at the end of the default domain.
 
-The container works correctly on my local machine, but on the shared Azure environment the app is currently not reachable from the default domain. The logs show issues like “No module named 'uvicorn'” or “No module named 'app'” inside the Azure runtime, even though the same code and image work locally. I spent a significant amount of time trying different startup commands and layouts, but the problem seems to be specific to the platform configuration, not the code.
+During development I created a second code Web App (mia-todo-manager2) and deployed it via ZIP (workflow azure-webapps-deploy.yml) as a fallback path. It runs the same FastAPI application, but the container-based Web App (mia-todo-manager) is the primary deployment used for this assignment.
 
 ## Monitoring and health checks
 
@@ -120,7 +120,7 @@ This report focuses on explaining the improvements.
 
 ## Conclusion
 
-In this assignment I took the To‑Do List Manager API from a basic working prototype to a more “DevOps‑ready” service. Overall, the project now looks and behaves much closer to a small real world service even though there is still room to improve the cloud deployment.
+In this assignment I took the To‑Do List Manager API from a basic working prototype to a more “DevOps‑ready” service. Overall, the project now looks and behaves much closer to a small real world service. 
 
 
 
